@@ -1,25 +1,39 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {BrowserRouter, Route, Switch} from 'react-router-dom';
+import SignIn from './components/auth/SignIn';
+import SignUp from './components/auth/SignUp';
+import Dashboard from './components/dashboard/Dashboard';
+import Navbar from './components/layout/Navbar';
+import CreateProject from './components/projects/CreateProject';
+import UpdateProject from './components/projects/updateProject';
+import ProjectDetails from './components/projects/ProjectDetails'
+import { useSelector } from 'react-redux';
+import { isLoaded } from 'react-redux-firebase';
+
+function AuthIsLoaded({ children }) {
+  const auth = useSelector(state => state.firebase.auth)
+  if (!isLoaded(auth)) return <div>Splash Screen</div>
+  return children
+}
+
 
 function App() {
   return (
+    <BrowserRouter>
+    <AuthIsLoaded>
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Navbar />
+      <Switch>
+        <Route exact path="/" component={Dashboard} />
+        <Route path="/project/:id" component={ProjectDetails} />
+        <Route path="/signin" component={SignIn} />
+        <Route path="/signUp" component={SignUp} />
+        <Route path="/create" component={CreateProject} />
+        <Route path='/update/:id' component={UpdateProject} />
+      </Switch>
     </div>
+    </AuthIsLoaded>
+    </BrowserRouter>
   );
 }
 
